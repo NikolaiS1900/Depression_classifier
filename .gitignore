@@ -5,7 +5,16 @@
 /lib64
 /share
 __pycache__
+/data
+/lesson_data
 
 # Files
 /pyvenv.cfg
 /Notes.txt
+/Dataformat.png
+/Tokenization.png
+/tools1.png
+/unwanted_tool.png
+/Mapping_index_and_word.png
+/Arguments_for_model.png
+/Generativ_model.png
