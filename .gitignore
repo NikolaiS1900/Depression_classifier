@@ -1,0 +1,11 @@
+# Folders
+/bin
+/include
+/lib
+/lib64
+/share
+__pycache__
+
+# Files
+/pyvenv.cfg
+/Notes.txt
