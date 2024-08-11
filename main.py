@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 
@@ -29,7 +30,7 @@ class classifier():
 
     def vectorizer(self) -> dict:
 
-        dict_Xtrain_Xtest = {}
+        dict_Xtrain_Xtest_Ytrain_Ytest = {}
         # test train split
 
         input_train, input_test, Ytrain, Ytest = train_test_split(
@@ -41,17 +42,19 @@ class classifier():
         Xtrain = vectorizer.fit_transform(input_train)
         Xtest = vectorizer.transform(input_test)
 
-        dict_Xtrain_Xtest["Xtrain"] = Xtrain
-        dict_Xtrain_Xtest["Xtest"] = Xtest
+        dict_Xtrain_Xtest_Ytrain_Ytest["Xtrain"] = Xtrain
+        dict_Xtrain_Xtest_Ytrain_Ytest["Xtest"] = Xtest
+        dict_Xtrain_Xtest_Ytrain_Ytest["Ytrain"] = Ytrain
+        dict_Xtrain_Xtest_Ytrain_Ytest["Ytest"] = Ytest
 
 
-        return dict_Xtrain_Xtest
+        return dict_Xtrain_Xtest_Ytrain_Ytest
 
     def get_info_on_sparse_matrix(self, argument: str) -> None:
 
-        dict_Xtrain_Xtest = self.vectorizer()
+        dict_Xtrain_Xtest_Ytrain_Ytest = self.vectorizer()
 
-        Xtrain = dict_Xtrain_Xtest["Xtrain"]
+        Xtrain = dict_Xtrain_Xtest_Ytrain_Ytest["Xtrain"]
 
         if argument != str:
             ValueError("Argument must be a string")
@@ -81,17 +84,31 @@ class classifier():
 
 
 
-    def create_model(self):
+    def create_model(self, show_scores: bool = True, show_confusion_matrix: bool = True) -> MultinomialNB:
 
-        dict_Xtrain_Xtest = self.vectorizer()
+        dict_Xtrain_Xtest_Ytrain_Ytest = self.vectorizer()
+        Xtrain = dict_Xtrain_Xtest_Ytrain_Ytest["Xtrain"]
+        Ytrain = dict_Xtrain_Xtest_Ytrain_Ytest["Ytrain"]
+        Xtest = dict_Xtrain_Xtest_Ytrain_Ytest["Xtest"]
+        Ytest = dict_Xtrain_Xtest_Ytrain_Ytest["Ytest"]
 
         # Choose model
         model = MultinomialNB()
+        model.fit(Xtrain, Ytrain)
+
+        if show_scores == True:
+            print("train score:", model.score(Xtrain, Ytrain))
+            print("test score:", model.score(Xtest, Ytest))
+
+        if show_confusion_matrix == True: # This helps us how good it performs on the different categories
+            Ptest = model.predict(Xtest)
+            ConfusionMatrixDisplay.from_predictions(Ytest, Ptest)
+            plt.show()
 
         return model
 
 classifier = classifier()
-classifier = classifier.get_info_on_sparse_matrix("percentage_non_zeros")
+classifier = classifier.create_model(show_scores=True)
 
 
 ## Jeg skal lige hav Ytest og Ytrain på plads, se hvordan kursusholderen gør.
