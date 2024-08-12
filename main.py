@@ -46,6 +46,9 @@ class classifier():
         dict_Xtrain_Xtest_Ytrain_Ytest["Xtest"] = Xtest
         dict_Xtrain_Xtest_Ytrain_Ytest["Ytrain"] = Ytrain
         dict_Xtrain_Xtest_Ytrain_Ytest["Ytest"] = Ytest
+        dict_Xtrain_Xtest_Ytrain_Ytest["input_test"] = input_test
+        dict_Xtrain_Xtest_Ytrain_Ytest["vectorizer"] = vectorizer
+
 
 
         return dict_Xtrain_Xtest_Ytrain_Ytest
@@ -84,31 +87,96 @@ class classifier():
 
 
 
-    def create_model(self, show_scores: bool = True, show_confusion_matrix: bool = True) -> MultinomialNB:
+    def create_model(self) -> dict:
 
         dict_Xtrain_Xtest_Ytrain_Ytest = self.vectorizer()
         Xtrain = dict_Xtrain_Xtest_Ytrain_Ytest["Xtrain"]
         Ytrain = dict_Xtrain_Xtest_Ytrain_Ytest["Ytrain"]
-        Xtest = dict_Xtrain_Xtest_Ytrain_Ytest["Xtest"]
-        Ytest = dict_Xtrain_Xtest_Ytrain_Ytest["Ytest"]
 
         # Choose model
         model = MultinomialNB()
         model.fit(Xtrain, Ytrain)
 
-        if show_scores == True:
-            print("train score:", model.score(Xtrain, Ytrain))
-            print("test score:", model.score(Xtest, Ytest))
+        return model
+    
+    def show_model_info(self, scores: bool = True,
+                        confusion_matrix: bool = True,
+                        misclassified_classes: bool = True,
+                        importantest_feauture: bool = True) -> None:
 
-        if show_confusion_matrix == True: # This helps us how good it performs on the different categories
-            Ptest = model.predict(Xtest)
+        #TODO: I need to be able to save the trained model, so I don't need to train it everytimne 
+        # I want to do something with it.
+        model = self.create_model()
+
+        #TODO: I need to be able to save my vectorized data too·
+        dict_Xtrain_Xtest_Ytrain_Ytest = self.vectorizer()
+        Xtrain = dict_Xtrain_Xtest_Ytrain_Ytest["Xtrain"]
+        Ytrain = dict_Xtrain_Xtest_Ytrain_Ytest["Ytrain"]
+        Xtest = dict_Xtrain_Xtest_Ytrain_Ytest["Xtest"]
+        Ytest = dict_Xtrain_Xtest_Ytrain_Ytest["Ytest"]
+        inputs_test = dict_Xtrain_Xtest_Ytrain_Ytest["input_test"]
+        vectorizer = dict_Xtrain_Xtest_Ytrain_Ytest["vectorizer"]
+
+
+        Ptest = model.predict(Xtest)
+
+
+        if confusion_matrix == True: # This helps us how good it performs on the different categories
             ConfusionMatrixDisplay.from_predictions(Ytest, Ptest)
             plt.show()
 
-        return model
+        if scores == True:
+            print("train score:", model.score(Xtrain, Ytrain))
+            print("test score:", model.score(Xtest, Ytest))
+
+        if misclassified_classes == True:
+        # Show some random misclassified examples
+            np.random.seed(0)
+
+            misclassified_idx = np.where(Ptest != Ytest)[0]
+            if len(misclassified_idx) > 0:
+                i = np.random.choice(misclassified_idx)
+                print("True class:", Ytest.iloc[i])
+                print("Predicted class:", Ptest[i])
+                inputs_test.iloc[i]
+                #print(misclassified_idx)
+            else:
+                print("No misclassified examples")
+
+        if importantest_feauture == True: # Attempt to see which features "matters the most"
+            #TODO: create stop word list and removes words like "the" and "a"
+            class_features = model.feature_log_prob_.shape
+            print(f"number of classes: {class_features[0]}")
+            print(f"number of features: {class_features[1]}")
+
+            # Show how the model have stored the classes
+            order_of_classes = model.classes_
+            print(order_of_classes)
+
+            # The count vectorizer stores the mapping of each word and each feature index
+            word_feature_index_map = vectorizer.vocabulary_
+            #print(word_feature_index_map)
+
+            # we actually want to have feature_index_word
+            feature_index_word = vectorizer.get_feature_names_out()
+            #print(feature_index_word)
+
+            # assign the mapping in feature_index_word to idx2word
+            idx2word = vectorizer.get_feature_names_out()
+            #print(idx2word)
+
+            # check the top 10 word in each class:
+            #TODO: Make a forloop that goes through all the classes
+            idx = np.argsort(-model.feature_log_prob_[0])[:10] # class 0
+            top_ten_idx = idx2word[idx]
+            print(top_ten_idx)
+
+        else:
+            pass
+
 
 classifier = classifier()
-classifier = classifier.create_model(show_scores=True)
+classifier = classifier.show_model_info(confusion_matrix=False, scores=False, misclassified_classes=True, importantest_feauture=True)
 
 
-## Jeg skal lige hav Ytest og Ytrain på plads, se hvordan kursusholderen gør.
+#Try with CategoriacalNB
