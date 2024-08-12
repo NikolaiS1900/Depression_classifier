@@ -173,10 +173,28 @@ class classifier():
 
         else:
             pass
+    def predict_new_string(self):
+
+        model = self.create_model()
+
+        # Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.
+        Xnew = ["I feel so worthless", "I don't want to get up"]
+        Xnew = np.reshape(Xnew, (-1, 1))
+
+
+
+        prediction = model.predict(Xnew)
+        print(prediction)
+
+
+        # Predict probability for each class:
+        probabilities = model.predict_proba(Xnew)
+        probabilities
 
 
 classifier = classifier()
-classifier = classifier.show_model_info(confusion_matrix=False, scores=False, misclassified_classes=True, importantest_feauture=True)
+#classifier = classifier.show_model_info(confusion_matrix=False, scores=False, misclassified_classes=True, importantest_feauture=True)
+classifier = classifier.predict_new_string()
 
 
 #Try with CategoriacalNB
