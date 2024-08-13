@@ -7,9 +7,13 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.model_selection import train_test_split
 
 
+
+
 class classifier():
     def __init__(self):
-        self.df = pd.read_csv("data/Depression/depressive_tweets_processed_cleaned.csv")
+        self.depression_df = pd.read_csv("data/Depression/depressive_tweets_processed_cleaned.csv")
+        self.happy_df = pd.read_csv("data/Happy/happy_text.csv")
+        self.df = pd.concat([self.depression_df, self.happy_df])
         self.inputs = self.df["text"]
         self.labels = self.df["labels"]
 
@@ -17,7 +21,11 @@ class classifier():
         print(self.df.head())
 
     def see_data_size(self):
-        print(len(self.df))
+        len_of_df_depression = f"Depression DF: {len(self.depression_df)}"
+        len_of_df_happy = f"Happy DF: {len(self.happy_df)}"
+
+        print(len_of_df_depression)
+        print(len_of_df_happy)
 
     def histogram(self):
         self.labels = self.df["labels"]
@@ -175,26 +183,31 @@ class classifier():
             pass
     def predict_new_string(self):
 
+        
         model = self.create_model()
+        dict_Xtrain_Xtest_Ytrain_Ytest = self.vectorizer()
+        vectorizer  = dict_Xtrain_Xtest_Ytrain_Ytest["vectorizer"]
 
-        # Reshape your data either using array.reshape(-1, 1) if your data has a single feature or array.reshape(1, -1) if it contains a single sample.
-        Xnew = ["I feel so worthless", "I don't want to get up"]
-        Xnew = np.reshape(Xnew, (-1, 1))
+        new_inputs = ["I feel so fucking sad again", "I am so gratefull for my programming skills"]
 
+        # Transform the new inputs using the same vectorizer
+        Xnew = vectorizer.transform(new_inputs)
 
+        # Predict the class labels for the new inputs
+        Pnew = model.predict(Xnew)
 
-        prediction = model.predict(Xnew)
-        print(prediction)
+        # Print the predicted class labels
+        print("Predicted classes:", Pnew)
 
 
         # Predict probability for each class:
         probabilities = model.predict_proba(Xnew)
-        probabilities
+        #print(probabilities)
 
 
 classifier = classifier()
 #classifier = classifier.show_model_info(confusion_matrix=False, scores=False, misclassified_classes=True, importantest_feauture=True)
-classifier = classifier.predict_new_string()
+classifier = classifier.histogram()
 
 
 #Try with CategoriacalNB
