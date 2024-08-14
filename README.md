@@ -1,10 +1,12 @@
+The data needs to be placed in the "data" directory.
+
 # Sources for data
 
 **The depression data**
-https://github.com/eddieir/Depression_detection_using_Twitter_post/blob/master/depressive_tweets_processed.csv
+[Depression_detection_using_Twitter_post](https://github.com/eddieir/Depression_detection_using_Twitter_post/blob/master/depressive_tweets_processed.csv)
 
 **The happy data**
-https://www.kaggle.com/datasets/ishantjuyal/emotions-in-text
+[Emotions in text](https://www.kaggle.com/datasets/ishantjuyal/emotions-in-text)
 
 
 # Requirements
