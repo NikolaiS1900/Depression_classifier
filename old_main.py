@@ -57,8 +57,6 @@ class classifier():
         dict_Xtrain_Xtest_Ytrain_Ytest["input_test"] = input_test
         dict_Xtrain_Xtest_Ytrain_Ytest["vectorizer"] = vectorizer
 
-
-
         return dict_Xtrain_Xtest_Ytrain_Ytest
 
     def get_info_on_sparse_matrix(self, argument: str) -> None:
