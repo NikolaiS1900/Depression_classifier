@@ -4,7 +4,7 @@ import re
 import matplotlib.pyplot as plt
 import pandas as pd
 
-class DataHandler():
+class DataHandler:
     """This class is used to handle the data
 
     It assumes that the data is in the data folder.
@@ -18,11 +18,17 @@ class DataHandler():
     def __init__(self):
         pass
 
-    def get_all_files_in_directory(self, data_path) -> list[str]:
+    @staticmethod
+    def get_all_files_in_directory(data_path) -> list[str]:
         """Goes through a directory and all sub directories and returns all the files in them
 
         Args:
             data_path (str): The path to the directory.
+            This argument must be a string
+
+        Returns:
+            list[str]: A list of all the file paths in the directory
+            and sub directories.
 
         This function a sub routine of concatenate_data
         """
@@ -34,10 +40,21 @@ class DataHandler():
 
         return all_files
 
-    def concatenate_data(self, data_path: str) -> None:
-        """Concatenates the data into one csv file"""
+    @classmethod
+    def concatenate_data(cls, data_path: str) -> None:
+        """Concatenates the data into one csv file
 
-        all_files = self.get_all_files_in_directory(data_path)
+        Args:
+            data_path (str): The path to the directory where the data is.
+            This argument must be a string
+        """
+        
+        if data_path != str:
+            ValueError("Argument must be a string")
+        if len(data_path) != 1:
+            ValueError("Please provide only one argument")
+
+        all_files = cls.get_all_files_in_directory(data_path)
 
         list_of_data_frames = ([pd.read_csv(file, index_col=None) for
                                 file in all_files if file.endswith(".csv")])
@@ -47,7 +64,8 @@ class DataHandler():
         # Save the DataFrame to a CSV file
         concatenated_data_frames.to_csv("concatenated_data/concatenated_data.csv", index=False)
 
-    def see_df_head(self) -> None:
+    @staticmethod
+    def see_df_head() -> None:
         """Prints the head of the data frame"""
 
         path_to_concat_data = "concatenated_data/concatenated_data.csv"
@@ -55,7 +73,8 @@ class DataHandler():
 
         print(data_frame.head())
 
-    def see_data_size(self) -> None:
+    @staticmethod
+    def see_data_size() -> None:
         """Prints the size of the data frame and the label counts
 
         This is to see if the data is balanced by seeing. The number of rows for each labels
@@ -75,7 +94,8 @@ class DataHandler():
         print(length_of_data_frames)
 
 
-    def histogram(self) -> None:
+    @staticmethod
+    def histogram() -> None:
         """Plots a histogram of the labels
 
         The histogram is to see a grahpical distribution of the labels
@@ -96,4 +116,4 @@ class DataHandler():
 
 
 if __name__ == "__main__":
-    DataHandler()
+    DataHandler

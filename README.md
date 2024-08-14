@@ -2,6 +2,11 @@
 
 The data needs to be placed in the "data" directory.
 
+The data needs to be csv files
+
+The csv files need to have two columns, one named "text" the other named "labels". That is regardless of how many labels you have.
+
+
 # Sources for data
 
 **The depression data**
@@ -12,6 +17,7 @@ The data needs to be placed in the "data" directory.
 
 
 # Requirements
+    joblib
     matplotlib
     numpy
     pandas
