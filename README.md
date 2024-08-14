@@ -1,3 +1,5 @@
+# Manual
+
 The data needs to be placed in the "data" directory.
 
 # Sources for data
