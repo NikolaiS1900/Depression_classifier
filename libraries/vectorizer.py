@@ -44,15 +44,19 @@ class Vectorizer:
                 text, labels, random_state=123)
 
             # # instanciate a count vectorizer object
+            # TODO: needs to be able to change to TfidfVectorizer()
+            # TODO: try with word embedding.
             vectorizer = CountVectorizer()
             x_train = vectorizer.fit_transform(input_train)
             x_test = vectorizer.transform(input_test)
 
-            joblib.dump(y_train, 'vectorized_objects/Ytrain.pkl')
-            joblib.dump(y_test, 'vectorized_objects/Ytest.pkl')
-            joblib.dump(x_train, 'vectorized_objects/Xtrain.pkl')
-            joblib.dump(x_test, 'vectorized_objects/Xtest.pkl')
-            joblib.dump(vectorizer, 'vectorized_objects/vectorizer.pkl')
+            joblib.dump(y_train, "vectorized_objects/Ytrain.pkl")
+            joblib.dump(y_test, "vectorized_objects/Ytest.pkl")
+            joblib.dump(x_train, "vectorized_objects/Xtrain.pkl")
+            joblib.dump(x_test, "vectorized_objects/Xtest.pkl")
+            joblib.dump(input_train, "vectorized_objects/input_train.pkl")
+            joblib.dump(input_test, "vectorized_objects/input_test.pkl")
+            joblib.dump(vectorizer, "vectorized_objects/vectorizer.pkl")
 
     @staticmethod
     def get_info_on_sparse_matrix(argument: str) -> None:
@@ -65,7 +69,7 @@ class Vectorizer:
                 percentage_non_zeros: Prints the percentage of non zeros in the matrix
         """
 
-        x_train = joblib.load('vectorized_objects/Xtrain.pkl')
+        x_train = joblib.load("vectorized_objects/Xtrain.pkl")
 
 
         if argument != str:
