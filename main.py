@@ -14,4 +14,15 @@ create_model = ModelMethods()
 # create_model.create_model("BernoulliNB")
 # create_model.create_model("CategoricalNB")
 # create_model.create_model("MultinomialNB")
-create_model.predict_new_string("MultinomialNB")
+create_model.show_model_info(
+                        "MultinomialNB",
+                        # scores = True,
+                        # confusion_matrix = True,
+                        # misclassified_classes = True,
+                        # importantest_feauture = True,
+                        # word_feature_index_map = True,
+                        # feature_index_word = True,
+                        # idx2word = True,
+                        top10word = True
+                        )
+# create_model.predict_new_string("MultinomialNB")
