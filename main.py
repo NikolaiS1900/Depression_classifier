@@ -15,7 +15,7 @@ create_model = ModelMethods()
 # create_model.create_model("CategoricalNB")
 # create_model.create_model("MultinomialNB")
 create_model.show_model_info(
-                        "MultinomialNB",
+                        "CategoricalNB",
                         # scores = True,
                         # confusion_matrix = True,
                         # misclassified_classes = True,
@@ -23,6 +23,6 @@ create_model.show_model_info(
                         # word_feature_index_map = True,
                         # feature_index_word = True,
                         # idx2word = True,
-                        top10word = True
+                        # top10word = True
                         )
 # create_model.predict_new_string("MultinomialNB")
