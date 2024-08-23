@@ -1,6 +1,6 @@
 """This module contains a class for creating models and showing info on models.
 
-It can create models for BernoulliNB, CategoricalNB and MultinomialNB
+It can create models for BernoulliNB, ComplementNB and MultinomialNB
 """
 import joblib
 import matplotlib.pyplot as plt
@@ -8,8 +8,9 @@ import numpy as np
 import scipy.sparse
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.naive_bayes import BernoulliNB
-from sklearn.naive_bayes import CategoricalNB
+from sklearn.naive_bayes import ComplementNB
 from sklearn.naive_bayes import MultinomialNB
+
 
 class ModelMethods():
     "The class for creating models"
@@ -18,12 +19,12 @@ class ModelMethods():
 
     @staticmethod
     def create_model(model: str) -> None:
-        """Creates models for BernoulliNB, CategoricalNB and MultinomialNB
+        """Creates models for BernoulliNB, ComplementNB and MultinomialNB
 
         Args:
             model (str): The model can be the following:
                 BernoulliNB
-                CategoricalNB
+                ComplementNB
                 MultinomialNB
         """
 
@@ -39,28 +40,12 @@ class ModelMethods():
             # Save the model to a file
             joblib.dump(bernoulli_nb_model_fitted, "created_models/BernoulliNB")
 
-        if model == "CategoricalNB":
+        if model == "ComplementNB":
 
-            # Check if training data is a sparse matrix
-            if scipy.sparse.issparse(x_train) is True:
+            complement_nb_model = ComplementNB()
+            complement_nb_model_fitted = complement_nb_model.fit(x_train, y_train)
 
-                 # Convert sparse data to dense data
-                x_train = x_train.toarray()
-                categorical_nb_model = CategoricalNB()
-                categorical_nb_model_fitted = categorical_nb_model.fit(x_train, y_train)
-
-                joblib.dump(categorical_nb_model_fitted, "created_models/CategoricalNB")
-
-            # Check if training data is a numpy array
-            if isinstance(x_train, np.ndarray) is True:
-
-                categorical_nb_model = CategoricalNB()
-                categorical_nb_model_fitted = categorical_nb_model.fit(x_train, y_train)
-
-                joblib.dump(categorical_nb_model_fitted, "created_models/CategoricalNB")
-
-            else:
-                ValueError("Training data is not a sparse matrix or a numpy array")
+            joblib.dump(complement_nb_model_fitted, "created_models/ComplementNB")
 
         if model == "MultinomialNB":
 
@@ -72,7 +57,7 @@ class ModelMethods():
 
         else:
             ValueError("Argument is not a valid model. It must be one of the "
-                       "following: BernoulliNB, CategoricalNB, MultinomialNB")
+                       "following: BernoulliNB, ComplementNB, MultinomialNB")
             
     
     @staticmethod
@@ -92,7 +77,7 @@ class ModelMethods():
         Args:
             model (str): The model can be the following:
                 BernoulliNB
-                CategoricalNB
+                ComplementNB
                 MultinomialNB
             scores (bool, optional): Shows the scores of the model.
             confusion_matrix (bool, optional): Shows the confusion matrix.
@@ -107,24 +92,27 @@ class ModelMethods():
         """ 
 
 
-        model = joblib.load(f"created_models/{model}")
+        loaded_model = joblib.load(f"created_models/{model}")
+
 
         x_train = joblib.load("vectorized_objects/Xtrain.pkl")
         y_train = joblib.load("vectorized_objects/Ytrain.pkl")
         x_test = joblib.load("vectorized_objects/Xtest.pkl")
         y_test = joblib.load("vectorized_objects/Ytest.pkl")
-        inputs_test = joblib.load("vectorized_objects/input_test.pkl")
+        input_test = joblib.load("vectorized_objects/input_test.pkl")
         vectorizer = joblib.load("vectorized_objects/vectorizer.pkl")
+        
 
-        p_test = model.predict(x_test)
+        p_test = loaded_model.predict(x_test)
+
+        if scores == True:
+        # Show scores of the model
+            print("train score:", loaded_model.score(x_train, y_train))
+            print("test score:", loaded_model.score(x_test, y_test))
 
         if confusion_matrix == True: #  shows how many cases are classified correctly and how many are misclassified.
             ConfusionMatrixDisplay.from_predictions(y_test, p_test)
             plt.show()
-
-        if scores == True:
-            print("train score:", model.score(x_train, y_train))
-            print("test score:", model.score(x_test, y_test))
 
         if misclassified_classes == True:
         # Show some random misclassified examples
@@ -135,19 +123,19 @@ class ModelMethods():
                 i = np.random.choice(misclassified_idx)
                 print("True class:", y_test.iloc[i])
                 print("Predicted class:", p_test[i])
-                print(f"\nMisclassified input:\n\n{inputs_test.iloc[i]}\n")
+                print(f"\nMisclassified input:\n\n{input_test.iloc[i]}\n")
                 print("\nIdx of misclassified input:\n\t", misclassified_idx)
             else:
                 print("No misclassified examples")
 
         if importantest_feauture == True: # Attempt to see which features "matters the most"
             #TODO: create stop word list and removes words like "the" and "a"
-            class_features = model.feature_log_prob_.shape
+            class_features = loaded_model.feature_log_prob_.shape
             print(f"number of classes: {class_features[0]}")
             print(f"number of features: {class_features[1]}")
 
             # Show how the model have stored the classes
-            order_of_classes = model.classes_
+            order_of_classes = loaded_model.classes_
             print(order_of_classes)
 
         if word_feature_index_map == True:
@@ -170,7 +158,7 @@ class ModelMethods():
 
         if top10word == True:
 
-            idx = np.argsort(-model.feature_log_prob_[0])[:10]
+            idx = np.argsort(-loaded_model.feature_log_prob_[0])[:10]
             idx2word = vectorizer.get_feature_names_out()
             top_ten_idx = idx2word[idx]
             print(top_ten_idx)
@@ -186,53 +174,19 @@ class ModelMethods():
 
         new_inputs = ["I feel so fucking sad again", "I am so gratefull for my programming skills", "I feel like shit"]
 
-
         # Transform the new inputs using the same vectorizer
         x_new = vectorizer.transform(new_inputs)
 
-        if model == "CategoricalNB":
+    # Predict the class labels for the new inputs
+        p_new = loaded_model.predict(x_new)
 
-            # Check if training data is a sparse matrix
-            if scipy.sparse.issparse(x_new) is True:
+        # Print the predicted class labels
+        print("Predicted classes:", p_new)
 
-                 # Convert sparse data to dense data
-                x_new = x_new.toarray()
-                p_new = loaded_model.predict(x_new)
+        # Predict probability for each class:
+        probabilities = loaded_model.predict_proba(x_new)
 
-                print("Predicted classes:", p_new)
-
-                # Predict probability for each class:
-                probabilities = loaded_model.predict_proba(x_new)
-                print(probabilities)
-
-            # Check if training data is a numpy array
-            elif isinstance(x_new, np.ndarray) is True:
-
-                p_new = loaded_model.predict(x_new)
-                print("Predicted classes:", p_new)
-
-                # Predict probability for each class:
-                probabilities = loaded_model.predict_proba(x_new)
-                print(probabilities)
-
-            else:
-                pass
-
-        if model != "CategoricalNB":
-
-        # Predict the class labels for the new inputs
-            p_new = loaded_model.predict(x_new)
-
-            # Print the predicted class labels
-            print("Predicted classes:", p_new)
-
-            # Predict probability for each class:
-            probabilities = loaded_model.predict_proba(x_new)
-
-            print(probabilities)
-
-        else:
-            TypeError("Model must be CategoricalNB, BernoulliNB or MultinomialNB")
+        print(probabilities)
 
 if __name__ == "__main__":
     ModelMethods
