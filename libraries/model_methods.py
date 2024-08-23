@@ -71,25 +71,38 @@ class ModelMethods():
                         idx2word: bool = False,
                         top10word: bool = False) -> None:
         """This helps us how good it performs on the different categories.
-
-        It shows how many cases are classified correctly and how many are misclassified.
+        
+        It shows how many cases are classified correctly and how many are misclassified
 
         Args:
             model (str): The model can be the following:
                 BernoulliNB
                 ComplementNB
-                MultinomialNB
-            scores (bool, optional): Shows the scores of the model.
-            confusion_matrix (bool, optional): Shows the confusion matrix.
-            misclassified_classes (bool, optional): Shows some random misclassified examples.
-            importantest_feauture (bool, optional): Shows the most important features in the model.
-            word_feature_index_map (bool, optional): Shows the word feature index map.
-            feature_index_word (bool, optional): Shows the feature index word map.
-            idx2word (bool, optional): Shows the index to word map.
-            top10word (bool, optional): Shows the top 10 words in the model.
+                MultinomialNB.
 
-            Every argumenmt is False by default. It has to be set as True
+            Every other argumenmt is False by default. It has to be set as True
             if you want it to be shown.
+
+            scores (bool, optional):
+                Shows the scores of the model.
+
+            misclassified_classes (bool, optional):
+                Shows some random misclassified examples.
+
+            importantest_feauture (bool, optional):
+                Shows the most important features in the model.
+
+            word_feature_index_map (bool, optional):
+                Shows the word feature index map.
+
+            feature_index_word (bool, optional):
+                Shows the feature index word map.
+
+            idx2word (bool, optional):
+                Shows the index to word map.
+
+            top10word (bool, optional):
+                Shows the top 10 words in the model.
         """
 
         loaded_model = joblib.load(f"created_models/{model}")
