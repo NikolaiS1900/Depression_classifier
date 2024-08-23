@@ -19,13 +19,13 @@ model_methods.create_model("MultinomialNB")
 model_methods.show_model_info(
                         "ComplementNB",
                         scores = False,
-                        confusion_matrix = False,
+                        show_confusion_matrix = False,
                         misclassified_classes = False,
                         importantest_feauture = False,
                         word_feature_index_map = False,
                         feature_index_word = False,
                         idx2word = False,
-                        top10word = True
+                        top10word = False
                         )
 
-# model_methods.predict_new_string("MultinomialNB")
+model_methods.predict_new_string("ComplementNB")

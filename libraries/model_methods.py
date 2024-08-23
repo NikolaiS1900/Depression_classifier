@@ -58,12 +58,12 @@ class ModelMethods():
         else:
             ValueError("Argument is not a valid model. It must be one of the "
                        "following: BernoulliNB, ComplementNB, MultinomialNB")
-            
-    
+
+
     @staticmethod
     def show_model_info(model: str,
                         scores: bool = False,
-                        confusion_matrix: bool = False,
+                        show_confusion_matrix: bool = False,
                         misclassified_classes: bool = False,
                         importantest_feauture: bool = False,
                         word_feature_index_map: bool = False,
@@ -88,12 +88,11 @@ class ModelMethods():
             idx2word (bool, optional): Shows the index to word map.
             top10word (bool, optional): Shows the top 10 words in the model.
 
-            Every argumenmt is False by default. It has to be set as True if you want it to be shown.       
-        """ 
-
+            Every argumenmt is False by default. It has to be set as True
+            if you want it to be shown.
+        """
 
         loaded_model = joblib.load(f"created_models/{model}")
-
 
         x_train = joblib.load("vectorized_objects/Xtrain.pkl")
         y_train = joblib.load("vectorized_objects/Ytrain.pkl")
@@ -101,20 +100,20 @@ class ModelMethods():
         y_test = joblib.load("vectorized_objects/Ytest.pkl")
         input_test = joblib.load("vectorized_objects/input_test.pkl")
         vectorizer = joblib.load("vectorized_objects/vectorizer.pkl")
-        
 
         p_test = loaded_model.predict(x_test)
 
-        if scores == True:
+        if scores is True:
         # Show scores of the model
             print("train score:", loaded_model.score(x_train, y_train))
             print("test score:", loaded_model.score(x_test, y_test))
 
-        if confusion_matrix == True: #  shows how many cases are classified correctly and how many are misclassified.
+        if show_confusion_matrix is True:
+        #  shows how many cases are classified correctly and how many are misclassified.
             ConfusionMatrixDisplay.from_predictions(y_test, p_test)
             plt.show()
 
-        if misclassified_classes == True:
+        if misclassified_classes is True:
         # Show some random misclassified examples
             np.random.seed(0)
 
@@ -128,8 +127,8 @@ class ModelMethods():
             else:
                 print("No misclassified examples")
 
-        if importantest_feauture == True: # Attempt to see which features "matters the most"
-            #TODO: create stop word list and removes words like "the" and "a"
+        if importantest_feauture is True: # Attempt to see which features "matters the most"
+            # TODO: create stop word list and removes words like "the" and "a"
             class_features = loaded_model.feature_log_prob_.shape
             print(f"number of classes: {class_features[0]}")
             print(f"number of features: {class_features[1]}")
@@ -138,25 +137,25 @@ class ModelMethods():
             order_of_classes = loaded_model.classes_
             print(order_of_classes)
 
-        if word_feature_index_map == True:
+        if word_feature_index_map is True:
 
             # The count vectorizer stores the mapping of each word and each feature index
             word_feature_index_map = vectorizer.vocabulary_
             print(word_feature_index_map)
 
-        if feature_index_word == True:
+        if feature_index_word is True:
 
             # we actually want to have feature_index_word
             feature_index_word = vectorizer.get_feature_names_out()
             print(feature_index_word)
 
-        if idx2word == True:
+        if idx2word is True:
 
             # assign the mapping in feature_index_word to idx2word
             idx2word = vectorizer.get_feature_names_out()
             print(idx2word)
 
-        if top10word == True:
+        if top10word is True:
 
             idx = np.argsort(-loaded_model.feature_log_prob_[0])[:10]
             idx2word = vectorizer.get_feature_names_out()
@@ -167,15 +166,30 @@ class ModelMethods():
             pass
 
     @staticmethod
-    def predict_new_string(model: str):
-    
+    def predict_new_string(model: str) -> None:
+        """Test the model on a a list of string(s).
+
+        It will take the new string and make a prediction
+        on what class it belongs to.
+        
+        Args:
+            model (str): The model can be the following:
+                BernoulliNB
+                ComplementNB
+                MultinomialNB
+
+            Select a model to make the prediction with.
+        """
+
+        user_input = input("Write something here and press enter: ")
+
+        new_input = [user_input]
+
         loaded_model = joblib.load(f"created_models/{model}")
         vectorizer = joblib.load("vectorized_objects/vectorizer.pkl")
 
-        new_inputs = ["I feel so fucking sad again", "I am so gratefull for my programming skills", "I feel like shit"]
-
         # Transform the new inputs using the same vectorizer
-        x_new = vectorizer.transform(new_inputs)
+        x_new = vectorizer.transform(new_input)
 
     # Predict the class labels for the new inputs
         p_new = loaded_model.predict(x_new)
