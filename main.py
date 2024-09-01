@@ -7,18 +7,19 @@ from libraries.model_methods import *
 # data_handler.histogram()
 
 vec = Vectorizer()
-vec.vectorizer("concatenated_data/concatenated_data.csv")
+# vec.count_vectorize()
 # vec.get_info_on_sparse_matrix("percentage_non_zeros")
+# vec.word2vec("BernoulliNB")
 
 model_methods = ModelMethods()
 
-model_methods.create_model("BernoulliNB")
-model_methods.create_model("ComplementNB")
-model_methods.create_model("MultinomialNB")
+# model_methods.create_model("BernoulliNB")
+# model_methods.create_model("ComplementNB")
+# model_methods.create_model("MultinomialNB")
 
 model_methods.show_model_info(
                         "ComplementNB",
-                        scores = False,
+                        scores = True,
                         show_confusion_matrix = False,
                         misclassified_classes = False,
                         importantest_feauture = False,
@@ -28,4 +29,4 @@ model_methods.show_model_info(
                         top10word = False
                         )
 
-model_methods.predict_new_string("ComplementNB")
+# model_methods.predict_new_string("ComplementNB")
