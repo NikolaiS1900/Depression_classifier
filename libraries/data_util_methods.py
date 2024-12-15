@@ -12,7 +12,7 @@ class DataUtils:
         self.__data_path = None
         self.__files_in_directory = None
         self.__concatenated_data = None
-        self.__concatenated_data_path = "concatenated_data/concatenated_data.csv"
+        self.__concatenated_data_path = None
 
 
     def __set_all_files_in_directory(self) -> None:
@@ -20,7 +20,7 @@ class DataUtils:
 
         It goes through all the sub directories and returns all the files in them
 
-        This method is used in load_data
+        This method is used in prepare_data
         """
 
         all_files = []
@@ -34,7 +34,7 @@ class DataUtils:
     def __concatenate_data(self) -> None:
         """Helper method to concatenate data into one csv file.
 
-        This method is used in the load_data method"""
+        This method is used in the prepare_data method"""
 
         list_of_data_frames = ([pd.read_csv(file, index_col=None) for
                                 file in self.__files_in_directory if file.endswith(".csv")])
@@ -43,10 +43,24 @@ class DataUtils:
 
         self.__concatenated_data = concatenated_data_frames
 
-    def load_data(self, data_path: str) -> None:
+
+    def __save_concatenated_data(self) -> None:
+        """Saves the concatenated data to a csv file
+
+        This method requires that the prepare_data method has been used
+        first.
+        """
+
+        if self.__concatenated_data is None:
+            sys.exit("Use the prepare_data method first")
+
+        self.__concatenated_data.to_csv(self.__concatenated_data_path, index=False)
+
+    def prepare_data(self, data_path: str, concatenated_data_path: str) -> None:
         """Loads the data to the class.
 
-        It sets the attributes of the class
+        It sets the attributes of the class and saves the data to a csv file
+        with the value of concatenated_data_path.
 
         Args:
             data_path (str): The path to the data
@@ -55,25 +69,14 @@ class DataUtils:
         self.__data_path = data_path
         self.__set_all_files_in_directory()
         self.__concatenate_data()
-
-
-    def save_concatenated_data(self) -> None:
-        """Saves the concatenated data to a csv file
-
-        This method requires that the load_data method has been used
-        first.
-        """
-
-        if self.__concatenated_data is None:
-            sys.exit("Use the load_data method first")
-
-        self.__concatenated_data.to_csv(self.__concatenated_data_path, index=False)
+        self.__concatenated_data_path = concatenated_data_path
+        self.__save_concatenated_data()
 
     def get_csv_file_head(self) -> None:
         """Prints the head of the data frame."""
 
         if not os.path.exists(self.__concatenated_data_path):
-            sys.exit("Use the load_data method first")
+            sys.exit("Use the prepare_data method first")
 
         data_frame = pd.read_csv(self.__concatenated_data_path)
 
@@ -87,7 +90,7 @@ class DataUtils:
         """
 
         if not os.path.exists(self.__concatenated_data_path):
-            sys.exit("Use the load_data method first")
+            sys.exit("Use the prepare_data method first")
 
         data_frame = pd.read_csv(self.__concatenated_data_path)
 
@@ -115,7 +118,7 @@ class DataUtils:
         """
 
         if not os.path.exists(self.__concatenated_data_path):
-            sys.exit("Use the load_data method first")
+            sys.exit("Use the prepare_data method first")
 
         data_frame = pd.read_csv(self.__concatenated_data_path)
 
