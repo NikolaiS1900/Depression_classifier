@@ -9,10 +9,10 @@ import pandas as pd
 class DataUtils:
     """This class is used to handle the data."""
     def __init__(self):
-        self.data_path = None
-        self.files_in_directory = None
-        self.concatenated_data = None
-        self.concatenated_data_path = "concatenated_data/concatenated_data.csv"
+        self.__data_path = None
+        self.__files_in_directory = None
+        self.__concatenated_data = None
+        self.__concatenated_data_path = "concatenated_data/concatenated_data.csv"
 
 
     def __set_all_files_in_directory(self) -> None:
@@ -24,11 +24,11 @@ class DataUtils:
         """
 
         all_files = []
-        for root, dirs, files in os.walk(self.data_path):
+        for root, dirs, files in os.walk(self.__data_path):
             for file in files:
                 all_files.append(os.path.join(root, file))
 
-        self.files_in_directory = all_files
+        self.__files_in_directory = all_files
 
 
     def __concatenate_data(self) -> None:
@@ -37,11 +37,11 @@ class DataUtils:
         This method is used in the load_data method"""
 
         list_of_data_frames = ([pd.read_csv(file, index_col=None) for
-                                file in self.files_in_directory if file.endswith(".csv")])
+                                file in self.__files_in_directory if file.endswith(".csv")])
 
         concatenated_data_frames = pd.concat(list_of_data_frames, ignore_index=True)
 
-        self.concatenated_data = concatenated_data_frames
+        self.__concatenated_data = concatenated_data_frames
 
     def load_data(self, data_path: str) -> None:
         """Loads the data to the class.
@@ -52,7 +52,7 @@ class DataUtils:
             data_path (str): The path to the data
         """
 
-        self.data_path = data_path
+        self.__data_path = data_path
         self.__set_all_files_in_directory()
         self.__concatenate_data()
 
@@ -64,18 +64,18 @@ class DataUtils:
         first.
         """
 
-        if self.concatenated_data is None:
+        if self.__concatenated_data is None:
             sys.exit("Use the load_data method first")
 
-        self.concatenated_data.to_csv(self.concatenated_data_path, index=False)
+        self.__concatenated_data.to_csv(self.__concatenated_data_path, index=False)
 
     def get_csv_file_head(self) -> None:
         """Prints the head of the data frame."""
 
-        if not os.path.exists(self.concatenated_data_path):
+        if not os.path.exists(self.__concatenated_data_path):
             sys.exit("Use the load_data method first")
 
-        data_frame = pd.read_csv(self.concatenated_data_path)
+        data_frame = pd.read_csv(self.__concatenated_data_path)
 
         print(data_frame.head())
 
@@ -86,10 +86,10 @@ class DataUtils:
         should not differ too much.
         """
 
-        if not os.path.exists(self.concatenated_data_path):
+        if not os.path.exists(self.__concatenated_data_path):
             sys.exit("Use the load_data method first")
 
-        data_frame = pd.read_csv(self.concatenated_data_path)
+        data_frame = pd.read_csv(self.__concatenated_data_path)
 
         length_of_data_frames = f"Number of rows in concatenated data frame: {len(data_frame)}"
 
@@ -114,10 +114,10 @@ class DataUtils:
         with imbalanced data.
         """
 
-        if not os.path.exists(self.concatenated_data_path):
+        if not os.path.exists(self.__concatenated_data_path):
             sys.exit("Use the load_data method first")
 
-        data_frame = pd.read_csv(self.concatenated_data_path)
+        data_frame = pd.read_csv(self.__concatenated_data_path)
 
         labels = data_frame["labels"]
 
