@@ -15,6 +15,10 @@ The csv files need to have two columns, one named "text" the other named "labels
 **The happy data**
 [Emotions in text](https://www.kaggle.com/datasets/ishantjuyal/emotions-in-text)
 
+The csv files should only have two columns. The first column 'text'
+and the second column should be named 'labels' regardless of how many
+labels there are.
+
 
 # Requirements
     joblib
@@ -22,7 +26,7 @@ The csv files need to have two columns, one named "text" the other named "labels
     numpy
     pandas
     PyQt5
-    sklearn
+    scikit-learn
 
 # Possible errors:
 ```
