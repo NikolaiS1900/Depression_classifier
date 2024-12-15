@@ -47,12 +47,8 @@ class DataUtils:
     def __save_concatenated_data(self) -> None:
         """Saves the concatenated data to a csv file
 
-        This method requires that the prepare_data method has been used
-        first.
+        This helper method should be called last in the prepare_data method
         """
-
-        if self.__concatenated_data is None:
-            sys.exit("Use the prepare_data method first")
 
         self.__concatenated_data.to_csv(self.__concatenated_data_path, index=False)
 
