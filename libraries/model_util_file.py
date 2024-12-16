@@ -1,16 +1,17 @@
+import joblib
 
-
-class utils():
+class ModelUtils():
     def __init__(self):
-        self.x_train_pkl = None
-        self.y_train_pkl = None
-        self.x_test_pkl = None
-        self.y_test_pkl = None
-        self.input_test_pkl = None
-        self.vectorizer_pkl = None
+        self.__x_train_pkl_path = None
+        self.__y_train_pkl_path = None
+        self.__x_test_pkl_path = None
+        self.__y_test_pkl_path = None
+        self.__input_test_pkl_path = None
+        self.__vectorizer_pkl_path = None
+        self.__model_path = None
 
 
-    def check_pkl_paths(self, pkl_path: str) -> ValueError:
+    def __check_pkl_paths(self, pkl_path: str) -> ValueError:
         """Helper method to check if paths end with pkl.
 
         This method is used in the set_pkl_paths method.
@@ -45,24 +46,64 @@ class utils():
         """
 
         if x_train_pkl_path:
-            self.check_pkl_paths(x_train_pkl_path)
-            self.x_train_pkl = x_train_pkl_path
+            self.__check_pkl_paths(x_train_pkl_path)
+            self.__x_train_pkl_path = x_train_pkl_path
         if y_train_pkl_path:
-            self.check_pkl_paths(y_train_pkl_path)
-            self.y_train_pkl = y_train_pkl_path
+            self.__check_pkl_paths(y_train_pkl_path)
+            self.__y_train_pkl_path = y_train_pkl_path
         if x_test_pkl_path:
-            self.check_pkl_paths(x_test_pkl_path)
-            self.x_test_pkl = x_test_pkl_path
+            self.__check_pkl_paths(x_test_pkl_path)
+            self.__x_test_pkl_path = x_test_pkl_path
         if y_test_pkl_path:
-            self.check_pkl_paths(y_test_pkl_path)
-            self.y_test_pkl = y_test_pkl_path
+            self.__check_pkl_paths(y_test_pkl_path)
+            self.__y_test_pkl_path = y_test_pkl_path
         if input_test_pkl_path:
-            self.check_pkl_paths(input_test_pkl_path)
-            self.input_test_pkl = input_test_pkl_path
+            self.__check_pkl_paths(input_test_pkl_path)
+            self.__input_test_pkl_path = input_test_pkl_path
         if vectorizer_pkl_path:
-            self.check_pkl_paths(vectorizer_pkl_path)
-            self.vectorizer_pkl = vectorizer_pkl_path
+            self.__check_pkl_paths(vectorizer_pkl_path)
+            self.__vectorizer_pkl_path = vectorizer_pkl_path
 
+    def get_pkl_paths(self) -> None:
+        """Prints the pkl paths."""
+
+        pkl_paths = (
+            "The pkl paths are:\n"
+            f"\t{self.__x_train_pkl_path}\n"
+            f"\t{self.__y_train_pkl_path}\n"
+            f"\t{self.__x_test_pkl_path}\n"
+            f"\t{self.__y_test_pkl_path}\n"
+            f"\t{self.__input_test_pkl_path}\n"
+            f"\t{self.__vectorizer_pkl_path}"
+        )
+
+        print(pkl_paths)
+
+    def set_model(self, model_path: str) -> None:
+        """Set the model type"""
+        self.__model_path = model_path
+
+    def get_model(self) -> None:
+        """Print the model"""
+        print(self.__model_path)
+
+    def ___load_model(self, model_path: str):
+        """Helper method to load the the selected model
+
+        Args:
+            model_path (str): The path to the model
+
+        Returns:
+            The loaded model
+        """
+
+        loaded_model = joblib.load(model_path)
+
+        return loaded_model
+    
     def show_score(self):
-        print("train_pkl score:", loaded_model.score(x_train_pkl, y_train_pkl))
-        print("test_pkl score:", loaded_model.score(x_test_pkl, y_test_pkl))
+        loaded_model = self.___load_model(self.__model_path)
+
+        print("train score:", loaded_model.score(self.__x_train_pkl_path, self.__y_train_pkl_path))
+        print("test score:", loaded_model.score(self.__x_test_pkl_path, self.__y_test_pkl_path))
+

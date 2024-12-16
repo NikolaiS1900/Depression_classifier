@@ -1,9 +1,25 @@
 from libraries.data_util_methods import DataUtils
+from libraries.model_util_file import ModelUtils
 
-data_utils = DataUtils()
-data_utils.prepare_data("data/", "concatenated_data/concatenated_data.csv")
-data_utils.get_csv_file_head()
-data_utils.histogram_of_csv_file()
+
+# # TODO: Neds to be in a function
+# data_utils = DataUtils()
+# data_utils.prepare_data("data/", "concatenated_data/concatenated_data.csv")
+# data_utils.get_csv_file_head()
+# data_utils.histogram_of_csv_file()
+
+
+model_utils = ModelUtils()
+model_utils.set_pkl_paths(
+    "pkl_files/x_train_pkl.pkl",
+    "pkl_files/y_train_pkl.pkl",
+    "pkl_files/x_test_pkl.pkl",
+    "pkl_files/y_test_pkl.pkl",
+    "pkl_files/input_test_pkl.pkl",
+    "pkl_files/vectorizer_pkl.pkl"
+)
+model_utils.set_model("created_models/ComplementNB")
+model_utils.show_score()
 
 
 
