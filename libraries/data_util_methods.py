@@ -8,7 +8,16 @@ import pandas as pd
 
 class DataUtils:
     """This class is used to handle the data."""
+
+
+    # Class level attributes for clarity about default setting
+    __data_path = None
+    __files_in_directory = None
+    __concatenated_data = None
+    __concatenated_data_path = None
+
     def __init__(self):
+        # Instance Attributes
         self.__data_path = None
         self.__files_in_directory = None
         self.__concatenated_data = None
